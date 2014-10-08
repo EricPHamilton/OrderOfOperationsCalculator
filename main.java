@@ -23,6 +23,13 @@ public class main {
 		}
 	}
 	
+	/**
+	 * Returns whether or not the given char is a number (true), or if it is an
+	 * operation char (false)
+	 *
+	 * @param  c char that will be checked
+	 * @return      true if is number, false if operator
+	 */
 	public static boolean isNumber(char c) {
 		char[] listOfChars = {'+' , '-', '*', '/', '^', '(', ')'};
 		for(char cha : listOfChars) {
@@ -33,7 +40,15 @@ public class main {
 		return true;
 	}
 	
+	/**
+	 * Converts a param expression String to an ordered arrayList
+	 * Each element is a number or an operator
+	 *
+	 * @param  Expression String - Ex. "1+(4*74)"
+	 * @return      ArrayList<String> that represents the Expression String - Ex. {1,+,(,4,*,74,)}
+	 */
 	public static ArrayList<String> convertToArrayList(String exp) {
+		//Adds each different char to its own element in the ArrayList
 		ArrayList<String> list = new ArrayList<String>();
 		for(int i = 0 ; i < exp.length() ; i++) {
 			if (exp.charAt(i) != ' ') {
@@ -41,6 +56,8 @@ public class main {
 			}
 		}
 			
+		//Parses through list to make sure there are no double-digit numbers
+		//Combines two indices with numbers together and shrinks the ArrayList
 		int ctr = 0;
 		while (ctr < list.size()-1) {
 			if(ctr < list.size()-1) {
@@ -57,20 +74,22 @@ public class main {
 		return list;
 	}
 	
-	/* Returns index of first num in expression*/
+	/**
+	 * Returns the index of the operator we wish to operate at
+	 *
+	 * @param  ArrayList representation of the expression
+	 * @return      int of index of the operator we wish to operate at
+	 */
 	public static int chooseIndexToPerformOperation(ArrayList<String> exp) {
 		if (contains("(", exp) || contains(")", exp)) {
 			//Find index of operation that we'll perform
 			int indexToPerformAtAfterRemoval = -1;
 			for(int i = exp.lastIndexOf("(") ; i < exp.size() ; i++) {
 				if(exp.get(i).equals("+") || exp.get(i).equals("-") || exp.get(i).equals("*") || exp.get(i).equals("/") || exp.get(i).equals("^")) {
-					indexToPerformAtAfterRemoval = i-1;
+					indexToPerformAtAfterRemoval = i;
 					break;
 				}
 			}
-			//Remove ()'s
-			exp.remove(exp.indexOf(")"));
-			exp.remove(exp.lastIndexOf("("));
 
 			return indexToPerformAtAfterRemoval;
 			
@@ -104,6 +123,13 @@ public class main {
 		}
 	}
 	
+	/**
+	 * Performs the mathematical expression at the given index.
+	 *
+	 * @param  exp - ArrayList representation of the expression string
+	 * @param index - index of operation to be performed
+	 * @return ArrayList<String> of shortened arrayList that represents the state of the expression after operation.
+	 */
 	public static ArrayList<String> operate (ArrayList<String> exp, int index) {
 		if (exp.get(index).equals("^")) {
 			//Solve power
@@ -156,9 +182,19 @@ public class main {
 			exp.remove(index+1);
 			exp.remove(index);
 		}
+		
+		removeParenthesis(exp);
+		
 		return exp;
 	}
 	
+	/**
+	 * Checks to see if a String is contained in ArrayList
+	 *
+	 * @param  checkForString, the thing we are checking for
+	 * @param exp, the arrayList representation of the expression
+	 * @return true if checkForString is an element of exp, false if otherwise.
+	 */
 	public static boolean contains(String checkForString, ArrayList<String> exp) {
 		for(String s : exp) {
 			if (s.equals(checkForString)) {
@@ -166,6 +202,31 @@ public class main {
 			}
 		}
 		return false;
+	}
+	
+	
+	/**
+	 * Only deletes Parenthesis if there is a single element between them (expression is inoperable)
+	 *
+	 * @param exp, the arrayList representation of the expression
+	 * @return ArrayList with removed parenthesis if needed
+	 */
+	public static ArrayList<String> removeParenthesis(ArrayList<String> exp) {
+		if(exp.contains("(") || exp.contains(")")) {
+			int lastStartParen = exp.lastIndexOf("(");
+			int matchingEndParen = -1;
+			for (int i = exp.size()-1 ; i > lastStartParen; i--) {
+				if (exp.get(i).equals(")")) {
+					matchingEndParen = i;
+				}
+			}
+			if (exp.get(lastStartParen + 2).equals(")")) {
+				exp.remove(lastStartParen);
+				exp.remove(matchingEndParen-1);
+			}
+		}
+			
+		return exp;
 	}
 	
 }
