@@ -40,6 +40,10 @@ public class main {
 		return true;
 	}
 	
+	public static boolean isOperator(char c) {
+		return !isNumber(c);
+	}
+	
 	/**
 	 * Converts a param expression String to an ordered arrayList
 	 * Each element is a number or an operator
@@ -71,6 +75,16 @@ public class main {
 			}
 		}
 
+		//Converts -'s that imply negative numbers from subtraction operators to negative numbers.
+		for(int i = 0 ; i < list.size() ; i++) {
+			if (list.get(i).charAt(0) == '-') {
+				if (i == 0 || isOperator(list.get(i-1).charAt(0))) {
+					list.set(i, "-" + list.get(i+1));
+					list.remove(i+1);
+				}
+			}
+		}
+		
 		return list;
 	}
 	
