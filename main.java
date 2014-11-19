@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+
 public class main {
 	public static void main(String[] args) {
 		System.out.println("Input your expression: ");
@@ -76,15 +77,29 @@ public class main {
 		}
 
 		//Converts -'s that imply negative numbers from subtraction operators to negative numbers.
-		for(int i = 0 ; i < list.size() ; i++) {
-			if (list.get(i).charAt(0) == '-') {
-				if (i == 0 || isOperator(list.get(i-1).charAt(0))) {
-					list.set(i, "-" + list.get(i+1));
-					list.remove(i+1);
+		for(int i = 0 ; i < list.size() ; i++) {		
+			/*if (list.get(i).charAt(0) == '-') {
+				if ((i == 0 && list.get(i).length() > 1) || (isOperator(list.get(i-1).charAt(0)))) {
+					System.out.println(list.get(i+1));
+					if (!list.get(i+1).contains("(") || !list.get(i+1).contains(")")) {
+						System.out.println("Changing");
+						list.set(i, "-" + list.get(i+1));
+						list.remove(i+1);
+					}
+				}
+			}*/
+			if (list.get(i).contains("-")) {
+				if (isNumber(list.get(i+1).charAt(0))) {
+					if (isOperator(list.get(i-1).charAt(0)) || i == 0) { //If the one before '-' is an operator...
+						//Then its a negative
+						System.out.println("Changing");
+						list.set(i, "-" + list.get(i+1));
+						list.remove(i+1);
+					}
 				}
 			}
+
 		}
-		
 		return list;
 	}
 	
